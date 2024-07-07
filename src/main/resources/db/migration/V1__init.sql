@@ -8,6 +8,6 @@ CREATE TABLE IF NOT EXISTS util_sch.employee_data
     last_name                  VARCHAR NOT NULL,
     email                      VARCHAR NOT NULL UNIQUE,
     department                 VARCHAR NOT NULL,
-    leaveBalance               INT NOT NULL,
+    leave_balance               INT NOT NULL,
     PRIMARY KEY (id)
 );

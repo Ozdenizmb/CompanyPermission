@@ -17,9 +17,14 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column(name = "email")
     private String email;
+    @Column(name = "department")
     private String department;
+    @Column(name = "leave_balance ")
     private int leaveBalance;
 }
