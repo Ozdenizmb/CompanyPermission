@@ -1,4 +1,4 @@
-# AmazonS3-CloudFront
+# Company Permission
 
 <h1>The Spring project was written to learn how to use...</h1>
 
