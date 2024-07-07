@@ -2,6 +2,8 @@ package com.StajProje.Company.controller;
 
 import com.StajProje.Company.api.EmployeeApi;
 import com.StajProje.Company.dto.EmployeeCreateDto;
+import com.StajProje.Company.dto.EmployeeDto;
+import com.StajProje.Company.dto.EmployeeUpdateDto;
 import com.StajProje.Company.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +20,15 @@ public class EmployeeController implements EmployeeApi {
     @Override
     public ResponseEntity<UUID> createEmployee(EmployeeCreateDto employeeCreateDto) {
         return ResponseEntity.ok(service.createEmployee(employeeCreateDto));
+    }
+
+    @Override
+    public ResponseEntity<EmployeeDto> getEmployee(String email) {
+        return ResponseEntity.ok(service.getEmployee(email));
+    }
+
+    @Override
+    public ResponseEntity<EmployeeDto> updateEmployee(String email, EmployeeUpdateDto employeeUpdateDto) {
+        return ResponseEntity.ok(service.updateEmployee(email, employeeUpdateDto));
     }
 }

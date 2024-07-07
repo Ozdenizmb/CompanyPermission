@@ -3,6 +3,7 @@ package com.StajProje.Company.service.impl;
 import com.StajProje.Company.dto.EmployeeCreateDto;
 import com.StajProje.Company.dto.EmployeeDto;
 import com.StajProje.Company.dto.EmployeeUpdateDto;
+import com.StajProje.Company.mapper.EmployeeMapper;
 import com.StajProje.Company.model.Employee;
 import com.StajProje.Company.repository.EmployeeRepository;
 import com.StajProje.Company.service.EmployeeService;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
     @Override
     public UUID createEmployee(EmployeeCreateDto employeeCreateDto) {
@@ -31,12 +33,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto getEmployee(String email) {
-        return null;
+        Employee existEmployee = employeeRepository.findByEmail(email);
+        return employeeMapper.toDto(existEmployee);
     }
 
     @Override
     public EmployeeDto updateEmployee(String email, EmployeeUpdateDto employeeUpdateDto) {
-        return null;
+        Employee existEmployee = employeeRepository.findByEmail(email);
+        BeanUtils.copyProperties(employeeUpdateDto, existEmployee);
+
+        Employee response = employeeRepository.save(existEmployee);
+
+        return employeeMapper.toDto(response);
     }
 
     @Override

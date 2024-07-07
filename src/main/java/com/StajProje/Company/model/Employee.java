@@ -14,7 +14,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     @Column(name = "first_name")
@@ -25,6 +25,6 @@ public class Employee {
     private String email;
     @Column(name = "department")
     private String department;
-    @Column(name = "leave_balance ")
+    @Column(name = "leave_balance")
     private int leaveBalance;
 }
