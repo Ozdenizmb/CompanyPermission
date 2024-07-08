@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS util_sch.permission_data
     number_of_days              INT NOT NULL,
     start_date                  DATE NOT NULL,
     end_date                    DATE NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (employee_id) REFERENCES util_sch.employee_data(id)
 );
