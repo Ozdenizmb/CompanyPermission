@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,5 +77,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.delete(existEmployee);
 
         return true;
+    }
+
+    @Override
+    public List<EmployeeDto> getAllEmployees() {
+        List<Employee> existEmployees = employeeRepository.findAll();
+        return employeeMapper.toDtoList(existEmployees);
     }
 }
