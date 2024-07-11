@@ -60,27 +60,130 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public PermissionDto getPermission(UUID id) {
-        return null;
+        Optional<Permission> existPermission = permissionRepository.findById(id);
+
+        if(existPermission.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND);
+        }
+
+        return mapper.toDto(existPermission.get());
     }
 
     @Override
     public List<PermissionDto> getPermissionsForEmployee(UUID employeeId) {
-        return List.of();
+        List<Permission> existPermissions = permissionRepository.findByEmployeeId(employeeId);
+
+        if(existPermissions.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND_FOR_EMPLOYEE);
+        }
+
+        return mapper.toDtoList(existPermissions);
     }
 
     @Override
     public PermissionDto updatePermission(UUID id, PermissionUpdateDto permissionUpdateDto) {
-        return null;
+        Optional<Permission> responsePermission = permissionRepository.findById(id);
+
+        if(responsePermission.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND);
+        }
+
+        Permission existPermission = responsePermission.get();
+
+        if(!existPermission.getEmployeeId().equals(permissionUpdateDto.employeeId())) {
+            Optional<Employee> responseWrongEmployee = employeeRepository.findById(existPermission.getEmployeeId());
+            Optional<Employee> responseTrueEmployee = employeeRepository.findById(permissionUpdateDto.employeeId());
+
+            if(responseWrongEmployee.isEmpty() || responseTrueEmployee.isEmpty()) {
+                throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.EMPLOYEE_NOT_FOUND);
+            }
+
+            Employee wrongEmployee = responseWrongEmployee.get();
+            Employee trueEmployee = responseTrueEmployee.get();
+
+            int numberOfPermissionDay = (int)ChronoUnit.DAYS.between(permissionUpdateDto.startDate(), permissionUpdateDto.endDate());
+
+            wrongEmployee.setLeaveBalance(wrongEmployee.getLeaveBalance() + existPermission.getNumberOfDays());
+            trueEmployee.setLeaveBalance(trueEmployee.getLeaveBalance() - (numberOfPermissionDay+1));
+
+            BeanUtils.copyProperties(permissionUpdateDto, existPermission);
+            existPermission.setNumberOfDays(numberOfPermissionDay+1);
+
+            Permission responseUpdate = permissionRepository.save(existPermission);
+            employeeRepository.save(wrongEmployee);
+            employeeRepository.save(trueEmployee);
+
+            return mapper.toDto(responseUpdate);
+        }
+        else {
+            Optional<Employee> responseEmployee = employeeRepository.findById(existPermission.getEmployeeId());
+
+            if(responseEmployee.isEmpty()) {
+                throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.EMPLOYEE_NOT_FOUND);
+            }
+
+            Employee existEmployee = responseEmployee.get();
+            existEmployee.setLeaveBalance(existEmployee.getLeaveBalance() + existPermission.getNumberOfDays());
+
+            int numberOfPermissionDay = (int)ChronoUnit.DAYS.between(permissionUpdateDto.startDate(), permissionUpdateDto.endDate());
+            existEmployee.setLeaveBalance(existEmployee.getLeaveBalance() - (numberOfPermissionDay+1));
+
+            BeanUtils.copyProperties(permissionUpdateDto, existPermission);
+            existPermission.setNumberOfDays(numberOfPermissionDay+1);
+
+            Permission responseUpdate = permissionRepository.save(existPermission);
+            employeeRepository.save(existEmployee);
+
+            return mapper.toDto(responseUpdate);
+        }
     }
 
     @Override
     public Boolean deletePermission(UUID id) {
-        return null;
+
+        Optional<Permission> responsePermission = permissionRepository.findById(id);
+
+        if(responsePermission.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND);
+        }
+
+        Permission existPermission = responsePermission.get();
+
+        permissionRepository.delete(existPermission);
+        Optional<Employee> responseEmployee = employeeRepository.findById(existPermission.getEmployeeId());
+
+        if(responseEmployee.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.EMPLOYEE_NOT_FOUND);
+        }
+
+        Employee existEmployee = responseEmployee.get();
+        existEmployee.setLeaveBalance(existEmployee.getLeaveBalance() + existPermission.getNumberOfDays());
+        employeeRepository.save(existEmployee);
+
+        return true;
     }
 
     @Override
     public Boolean deletePermissionsForEmployee(UUID employeeId) {
-        return null;
+
+        List<Permission> existPermissions = permissionRepository.findByEmployeeId(employeeId);
+
+        if(existPermissions.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND_FOR_EMPLOYEE);
+        }
+
+        permissionRepository.deleteAll(existPermissions);
+        Optional<Employee> responseEmployee = employeeRepository.findById(employeeId);
+
+        if(responseEmployee.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.EMPLOYEE_NOT_FOUND);
+        }
+
+        Employee existEmployee = responseEmployee.get();
+        existEmployee.setLeaveBalance(15);
+        employeeRepository.save(existEmployee);
+
+        return true;
     }
 
 }
