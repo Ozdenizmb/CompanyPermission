@@ -14,4 +14,8 @@ public class ErrorMessages {
 
     public static final String PERMISSION_NOT_FOUND = "Permission Not Found!";
 
+    public static final String ADMIN_NOT_FOUND = "Admin Not Found";
+
+    public static final String EMAIL_NOT_FOUND = "Email Not Found";
+
 }

@@ -2,12 +2,12 @@ package com.StajProje.Company.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-public record EmployeeUpdateDto(
+public record AdminCreateDto(
         @NotNull
-        String firstName,
+        String email,
         @NotNull
-        String lastName,
+        String password,
         @NotNull
-        String department
+        String role
 ) {
 }

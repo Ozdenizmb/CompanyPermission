@@ -1,8 +1,6 @@
 package com.StajProje.Company.api;
 
-import com.StajProje.Company.dto.EmployeeCreateDto;
-import com.StajProje.Company.dto.EmployeeDto;
-import com.StajProje.Company.dto.EmployeeUpdateDto;
+import com.StajProje.Company.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,17 +14,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
-@Tag(name = "Employee_Service")
+@Tag(name = "Admin_Service")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping(path = "/api/v1/employee")
+@RequestMapping(path = "/api/v1/admins")
 @Validated
-public interface EmployeeApi {
+public interface AdminApi {
 
-    @Operation(operationId = "CreateEmployee", summary = "Create employee.")
+    @Operation(operationId = "CreateAdmin", summary = "Create admin.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = Boolean.class))),
-            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = EmployeeCreateDto.class))),
+            @ApiResponse(responseCode = "201", description = "Created", content = @Content(schema = @Schema(implementation = AdminCreateDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -36,10 +33,10 @@ public interface EmployeeApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
-    ResponseEntity<UUID> createEmployee(@RequestBody @Valid EmployeeCreateDto employeeCreateDto);
+    ResponseEntity<AdminDto> signUpAdmin(@RequestBody @Valid AdminCreateDto adminCreateDto);
 
-    @Operation(operationId = "getEmployee", summary = "Get employee.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = EmployeeDto.class))),
+    @Operation(operationId = "getAdmins", summary = "Get admins.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = AdminDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -49,10 +46,10 @@ public interface EmployeeApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<EmployeeDto> getEmployee(@RequestParam String email);
+    ResponseEntity<List<AdminDto>> getAdmins();
 
-    @Operation(operationId = "updateEmployee", summary = "Update employee.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = EmployeeDto.class))),
+    @Operation(operationId = "updateAdmin", summary = "Update admin.")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = AdminDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -62,9 +59,9 @@ public interface EmployeeApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @PutMapping(value = "/update/{email}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<EmployeeDto> updateEmployee(@PathVariable String email, @RequestBody @Valid EmployeeUpdateDto employeeUpdateDto);
+    ResponseEntity<AdminDto> updateAdmin(@PathVariable String email, @RequestBody @Valid AdminUpdateDto adminUpdateDto);
 
-    @Operation(operationId = "deleteEmployee", summary = "Delete employee.")
+    @Operation(operationId = "deleteAdmin", summary = "Delete admin.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -74,19 +71,6 @@ public interface EmployeeApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @DeleteMapping(value = "/delete/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> deleteEmployee(@PathVariable String email);
-
-    @Operation(operationId = "getAllEmployees", summary = "Get all employees.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = EmployeeDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = Error.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = Error.class))),
-            @ApiResponse(responseCode = "405", description = "Method Not Allowed", content = @Content(schema = @Schema(implementation = Error.class))),
-            @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Error.class))),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
-    })
-    @GetMapping(value = "/allEmployees",produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<EmployeeDto>> getAllEmployees();
+    ResponseEntity<Boolean> deleteAdmin(@PathVariable String email);
 
 }
