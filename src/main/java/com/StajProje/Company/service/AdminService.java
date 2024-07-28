@@ -9,6 +9,7 @@ import java.util.List;
 public interface AdminService {
 
     AdminDto signUpAdmin(AdminCreateDto adminCreateDto);
+    AdminDto loginAdmin(String email, String password);
     List<AdminDto> getAdmins();
     AdminDto updateAdmin(String email, AdminUpdateDto adminUpdateDto);
     Boolean deleteAdmin(String email);

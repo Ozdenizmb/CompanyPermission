@@ -19,8 +19,13 @@ public class EmployeeController implements EmployeeApi {
     private final EmployeeService service;
 
     @Override
-    public ResponseEntity<UUID> createEmployee(EmployeeCreateDto employeeCreateDto) {
-        return ResponseEntity.ok(service.createEmployee(employeeCreateDto));
+    public ResponseEntity<UUID> signUpEmployee(EmployeeCreateDto employeeCreateDto) {
+        return ResponseEntity.ok(service.signUpEmployee(employeeCreateDto));
+    }
+
+    @Override
+    public ResponseEntity<EmployeeDto> loginEmployee(String email, String password) {
+        return ResponseEntity.ok(service.loginEmployee(email, password));
     }
 
     @Override
@@ -29,13 +34,13 @@ public class EmployeeController implements EmployeeApi {
     }
 
     @Override
-    public ResponseEntity<EmployeeDto> updateEmployee(String email, EmployeeUpdateDto employeeUpdateDto) {
-        return ResponseEntity.ok(service.updateEmployee(email, employeeUpdateDto));
+    public ResponseEntity<EmployeeDto> updateEmployee(UUID id, EmployeeUpdateDto employeeUpdateDto) {
+        return ResponseEntity.ok(service.updateEmployee(id, employeeUpdateDto));
     }
 
     @Override
-    public ResponseEntity<Boolean> deleteEmployee(String email) {
-        return ResponseEntity.ok(service.deleteEmployee(email));
+    public ResponseEntity<Boolean> deleteEmployee(UUID id) {
+        return ResponseEntity.ok(service.deleteEmployee(id));
     }
 
     @Override
