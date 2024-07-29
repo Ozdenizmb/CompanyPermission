@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Admin_Service")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -71,8 +72,8 @@ public interface AdminApi {
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
-    @PutMapping(value = "/update/{email}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<AdminDto> updateAdmin(@RequestHeader String key, @PathVariable String email, @RequestBody @Valid AdminUpdateDto adminUpdateDto);
+    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<AdminDto> updateAdmin(@RequestHeader String key, @PathVariable UUID id, @RequestBody @Valid AdminUpdateDto adminUpdateDto);
 
     @Operation(operationId = "deleteAdmin", summary = "Delete admin.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content"),
@@ -83,7 +84,7 @@ public interface AdminApi {
             @ApiResponse(responseCode = "405", description = "Method Not Allowed", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
-    @DeleteMapping(value = "/delete/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> deleteAdmin(@RequestHeader String key, @PathVariable String email);
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Boolean> deleteAdmin(@RequestHeader String key, @PathVariable UUID id);
 
 }

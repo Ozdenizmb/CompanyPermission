@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,13 +34,13 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<AdminDto> updateAdmin(String key, String email, AdminUpdateDto adminUpdateDto) {
-        return ResponseEntity.ok(service.updateAdmin(key, email, adminUpdateDto));
+    public ResponseEntity<AdminDto> updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto) {
+        return ResponseEntity.ok(service.updateAdmin(key, id, adminUpdateDto));
     }
 
     @Override
-    public ResponseEntity<Boolean> deleteAdmin(String key, String email) {
-        return ResponseEntity.ok(service.deleteAdmin(key, email));
+    public ResponseEntity<Boolean> deleteAdmin(String key, UUID id) {
+        return ResponseEntity.ok(service.deleteAdmin(key, id));
     }
 
 }

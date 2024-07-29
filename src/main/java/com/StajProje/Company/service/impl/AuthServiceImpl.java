@@ -58,12 +58,14 @@ public class AuthServiceImpl implements AuthService {
     public Boolean verifyUserIdMatchesAuthenticatedUser(UUID id) {
         String authenticatedUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<Employee> authenticatedUserOpt = employeeRepository.findByEmail(authenticatedUserEmail);
-        if (authenticatedUserOpt.isEmpty()) {
-            return false;
+        if (authenticatedUserOpt.isPresent()) {
+            Employee authenticatedUser = authenticatedUserOpt.get();
+            return authenticatedUser.getId().equals(id);
         }
 
-        Employee authenticatedUser = authenticatedUserOpt.get();
-        return authenticatedUser.getId().equals(id);
+        Optional<Admin> authenticatedAdminOpt = adminRepository.findByEmail(authenticatedUserEmail);
+
+        return authenticatedAdminOpt.isPresent();
     }
 
 }

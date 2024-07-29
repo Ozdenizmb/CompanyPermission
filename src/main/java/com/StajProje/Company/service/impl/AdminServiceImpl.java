@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -79,9 +80,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminDto updateAdmin(String key, String email, AdminUpdateDto adminUpdateDto) {
+    public AdminDto updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto) {
         if(adminKey.equals(key)) {
-            Optional<Admin> responseAdmin = repository.findByEmail(email);
+            Optional<Admin> responseAdmin = repository.findById(id);
 
             if(responseAdmin.isEmpty()) {
                 throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.ADMIN_NOT_FOUND);
@@ -99,9 +100,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Boolean deleteAdmin(String key, String email) {
+    public Boolean deleteAdmin(String key, UUID id) {
         if(adminKey.equals(key)) {
-            Optional<Admin> responseAdmin = repository.findByEmail(email);
+            Optional<Admin> responseAdmin = repository.findById(id);
 
             if(responseAdmin.isEmpty()) {
                 throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.ADMIN_NOT_FOUND);
