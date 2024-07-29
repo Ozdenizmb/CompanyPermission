@@ -53,8 +53,8 @@ public class SecurityConfig {
             "/api/v1/permissions/update/{id}",
             "/api/v1/permissions/delete/{id}",
             "/api/v1/permissions/delete/employee/{employeeId}",
-            "/api/v1/admins/update/{email}",
-            "/api/v1/admins/delete/{email}"
+            "/api/v1/admins/update/{id}",
+            "/api/v1/admins/delete/{id}"
     };
 
     @Bean

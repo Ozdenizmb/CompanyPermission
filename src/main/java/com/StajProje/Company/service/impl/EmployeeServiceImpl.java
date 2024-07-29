@@ -10,15 +10,16 @@ import com.StajProje.Company.model.Employee;
 import com.StajProje.Company.repository.EmployeeRepository;
 import com.StajProje.Company.service.AuthService;
 import com.StajProje.Company.service.EmployeeService;
+import com.StajProje.Company.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -28,6 +29,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeMapper employeeMapper;
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
+
+    @Value("${file.allowed-formats}")
+    private String[] allowedFormats;
 
     @Override
     public UUID signUpEmployee(EmployeeCreateDto employeeCreateDto) {
@@ -71,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto updateEmployee(UUID id, EmployeeUpdateDto employeeUpdateDto) {
+    public EmployeeDto updateEmployee(UUID id, EmployeeUpdateDto employeeUpdateDto, MultipartFile file) {
         if(!authService.verifyUserIdMatchesAuthenticatedUser(id)) {
             throw PermissionException.withStatusAndMessage(HttpStatus.FORBIDDEN, ErrorMessages.UNAUTHORIZED);
         }
@@ -83,9 +88,26 @@ public class EmployeeServiceImpl implements EmployeeService {
             BeanUtils.copyProperties(employeeUpdateDto, existEmployee);
             existEmployee.setPassword(passwordEncoder.encode(existEmployee.getPassword()));
 
-            Employee response = employeeRepository.save(existEmployee);
+            if(file != null && !file.isEmpty()) {
+                String fileType = Objects.requireNonNull(file.getContentType()).split("/")[1];
+                if(!Arrays.asList(allowedFormats).contains(fileType)) {
+                    throw PermissionException.withStatusAndMessage(HttpStatus.BAD_REQUEST, ErrorMessages.UNSUPPORTED_FILE_TYPE);
+                }
 
-            return employeeMapper.toDto(response);
+                String currentImageUrl = existEmployee.getImageUrl();
+
+                if(currentImageUrl != null && !currentImageUrl.isEmpty()) {
+                    fileService.deleteFile(currentImageUrl);
+                }
+                String newFileName = fileService.uploadFile(file);
+                existEmployee.setImageUrl(newFileName);
+            }
+            try {
+                return employeeMapper.toDto(employeeRepository.save(existEmployee));
+            } catch (Exception e) {
+                throw e;
+            }
+
         }
         else {
             throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.EMPLOYEE_NOT_FOUND);
@@ -106,7 +128,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         Employee existEmployee = existResponse.get();
-        employeeRepository.delete(existEmployee);
+        try {
+            employeeRepository.delete(existEmployee);
+        } catch (Exception e) {
+            throw e;
+        }
+        if(existEmployee.getImageUrl() != null && !existEmployee.getImageUrl().isEmpty()) {
+            fileService.deleteFile(existEmployee.getImageUrl());
+        }
 
         return true;
     }

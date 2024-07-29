@@ -9,6 +9,7 @@ import com.StajProje.Company.mapper.AdminMapper;
 import com.StajProje.Company.model.Admin;
 import com.StajProje.Company.repository.AdminRepository;
 import com.StajProje.Company.service.AdminService;
+import com.StajProje.Company.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +17,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -29,9 +29,12 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepository repository;
     private final AdminMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
 
     @Value("${adminSignUpKey}")
     private String adminKey;
+    @Value("${file.allowed-formats}")
+    private String[] allowedFormats;
 
     @Override
     public AdminDto signUpAdmin(String key, AdminCreateDto adminCreateDto) {
@@ -80,7 +83,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminDto updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto) {
+    public AdminDto updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto, MultipartFile file) {
         if(adminKey.equals(key)) {
             Optional<Admin> responseAdmin = repository.findById(id);
 
@@ -92,7 +95,27 @@ public class AdminServiceImpl implements AdminService {
             BeanUtils.copyProperties(adminUpdateDto, existAdmin);
             existAdmin.setPassword(passwordEncoder.encode(existAdmin.getPassword()));
 
-            return mapper.toDto(repository.save(existAdmin));
+            if(file != null && !file.isEmpty()) {
+                String fileType = Objects.requireNonNull(file.getContentType()).split("/")[1];
+                if(!Arrays.asList(allowedFormats).contains(fileType)) {
+                    throw PermissionException.withStatusAndMessage(HttpStatus.BAD_REQUEST, ErrorMessages.UNSUPPORTED_FILE_TYPE);
+                }
+
+                String currentImageUrl = existAdmin.getImageUrl();
+
+                if(currentImageUrl != null && !currentImageUrl.isEmpty()) {
+                    fileService.deleteFile(currentImageUrl);
+                }
+                String newFileName = fileService.uploadFile(file);
+                existAdmin.setImageUrl(newFileName);
+            }
+
+            try {
+                return mapper.toDto(repository.save(existAdmin));
+            } catch (Exception e) {
+                throw e;
+            }
+
         }
         else {
             throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.WRONG_ADMIN_KEY);
@@ -109,7 +132,14 @@ public class AdminServiceImpl implements AdminService {
             }
 
             Admin existAdmin = responseAdmin.get();
-            repository.delete(existAdmin);
+            try {
+                repository.delete(existAdmin);
+            } catch (Exception e) {
+                throw e;
+            }
+            if(existAdmin.getImageUrl() != null && !existAdmin.getImageUrl().isEmpty()) {
+                fileService.deleteFile(existAdmin.getImageUrl());
+            }
 
             return true;
         }

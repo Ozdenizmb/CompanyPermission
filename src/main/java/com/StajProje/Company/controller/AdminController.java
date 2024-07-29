@@ -8,6 +8,7 @@ import com.StajProje.Company.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,8 +35,8 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<AdminDto> updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto) {
-        return ResponseEntity.ok(service.updateAdmin(key, id, adminUpdateDto));
+    public ResponseEntity<AdminDto> updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto, MultipartFile file) {
+        return ResponseEntity.ok(service.updateAdmin(key, id, adminUpdateDto, file));
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,7 +63,7 @@ public interface AdminApi {
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<List<AdminDto>> getAdmins();
 
-    @Operation(operationId = "updateAdmin", summary = "Update admin.")
+    @Operation(operationId = "updateAdmin", summary = "Update admin. (You need use postman. You cannot use this method in Swagger.)")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = AdminDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -72,8 +73,8 @@ public interface AdminApi {
             @ApiResponse(responseCode = "409", description = "Conflict", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
-    @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<AdminDto> updateAdmin(@RequestHeader String key, @PathVariable UUID id, @RequestBody @Valid AdminUpdateDto adminUpdateDto);
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<AdminDto> updateAdmin(@RequestHeader String key, @PathVariable UUID id, @RequestPart @Valid AdminUpdateDto adminUpdateDto, @RequestPart(required = false) MultipartFile file);
 
     @Operation(operationId = "deleteAdmin", summary = "Delete admin.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content"),
