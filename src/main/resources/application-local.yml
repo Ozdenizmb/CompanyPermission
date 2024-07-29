@@ -15,10 +15,6 @@ spring:
       initial-size: 5
       max-size: 10
 
-## Admin Key ##
-admin:
-  key: ${adminSignUpKey}
-
 ## OpenApi Settings ##
 springdoc:
   swagger-ui:

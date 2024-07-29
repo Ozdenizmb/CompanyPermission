@@ -18,13 +18,13 @@ public class AdminController implements AdminApi {
     private final AdminService service;
 
     @Override
-    public ResponseEntity<AdminDto> signUpAdmin(AdminCreateDto adminCreateDto) {
-        return ResponseEntity.ok(service.signUpAdmin(adminCreateDto));
+    public ResponseEntity<AdminDto> signUpAdmin(String key, AdminCreateDto adminCreateDto) {
+        return ResponseEntity.ok(service.signUpAdmin(key, adminCreateDto));
     }
 
     @Override
-    public ResponseEntity<AdminDto> loginAdmin(String email, String password) {
-        return ResponseEntity.ok(service.loginAdmin(email, password));
+    public ResponseEntity<AdminDto> loginAdmin(String key, String email, String password) {
+        return ResponseEntity.ok(service.loginAdmin(key, email, password));
     }
 
     @Override
@@ -33,13 +33,13 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<AdminDto> updateAdmin(String email, AdminUpdateDto adminUpdateDto) {
-        return ResponseEntity.ok(service.updateAdmin(email, adminUpdateDto));
+    public ResponseEntity<AdminDto> updateAdmin(String key, String email, AdminUpdateDto adminUpdateDto) {
+        return ResponseEntity.ok(service.updateAdmin(key, email, adminUpdateDto));
     }
 
     @Override
-    public ResponseEntity<Boolean> deleteAdmin(String email) {
-        return ResponseEntity.ok(service.deleteAdmin(email));
+    public ResponseEntity<Boolean> deleteAdmin(String key, String email) {
+        return ResponseEntity.ok(service.deleteAdmin(key, email));
     }
 
 }

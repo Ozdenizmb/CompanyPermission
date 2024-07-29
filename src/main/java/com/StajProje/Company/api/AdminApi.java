@@ -33,7 +33,7 @@ public interface AdminApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
-    ResponseEntity<AdminDto> signUpAdmin(@RequestBody @Valid AdminCreateDto adminCreateDto);
+    ResponseEntity<AdminDto> signUpAdmin(@RequestHeader String key, @RequestBody @Valid AdminCreateDto adminCreateDto);
 
     @Operation(operationId = "loginAdmin", summary = "Login admins.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = AdminDto.class))),
@@ -46,7 +46,7 @@ public interface AdminApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping(value = "/login/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<AdminDto> loginAdmin(@PathVariable String email, @RequestParam String password);
+    ResponseEntity<AdminDto> loginAdmin(@RequestHeader String key, @PathVariable String email, @RequestParam String password);
 
     @Operation(operationId = "getAdmins", summary = "Get admins.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = AdminDto.class))),
@@ -72,7 +72,7 @@ public interface AdminApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @PutMapping(value = "/update/{email}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<AdminDto> updateAdmin(@PathVariable String email, @RequestBody @Valid AdminUpdateDto adminUpdateDto);
+    ResponseEntity<AdminDto> updateAdmin(@RequestHeader String key, @PathVariable String email, @RequestBody @Valid AdminUpdateDto adminUpdateDto);
 
     @Operation(operationId = "deleteAdmin", summary = "Delete admin.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content"),
@@ -84,6 +84,6 @@ public interface AdminApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @DeleteMapping(value = "/delete/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Boolean> deleteAdmin(@PathVariable String email);
+    ResponseEntity<Boolean> deleteAdmin(@RequestHeader String key, @PathVariable String email);
 
 }
