@@ -30,6 +30,11 @@ public class AdminController implements AdminApi {
     }
 
     @Override
+    public ResponseEntity<AdminDto> getAdmin(String email) {
+        return ResponseEntity.ok(service.getAdmin(email));
+    }
+
+    @Override
     public ResponseEntity<List<AdminDto>> getAdmins() {
         return ResponseEntity.ok(service.getAdmins());
     }

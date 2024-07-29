@@ -12,6 +12,7 @@ public interface AdminService {
 
     AdminDto signUpAdmin(String key, AdminCreateDto adminCreateDto);
     AdminDto loginAdmin(String key, String email, String password);
+    AdminDto getAdmin(String email);
     List<AdminDto> getAdmins();
     AdminDto updateAdmin(String key, UUID id, AdminUpdateDto adminUpdateDto, MultipartFile file);
     Boolean deleteAdmin(String key, UUID id);

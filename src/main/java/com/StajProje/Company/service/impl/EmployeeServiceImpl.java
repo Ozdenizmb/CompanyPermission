@@ -40,6 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         BeanUtils.copyProperties(employeeCreateDto, employee);
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employee.setLeaveBalance(15);
+        employee.setStatuses("EMPLOYEE");
 
         Employee response = employeeRepository.save(employee);
 

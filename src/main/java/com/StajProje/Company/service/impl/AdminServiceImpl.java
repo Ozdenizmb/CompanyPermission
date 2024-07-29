@@ -42,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
             Admin admin = new Admin();
             BeanUtils.copyProperties(adminCreateDto, admin);
             admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+            admin.setStatuses("ADMIN");
 
             Admin response = repository.save(admin);
 
@@ -75,6 +76,17 @@ public class AdminServiceImpl implements AdminService {
         else {
             throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.WRONG_ADMIN_KEY);
         }
+    }
+
+    @Override
+    public AdminDto getAdmin(String email) {
+        Optional<Admin> responseAdmin = repository.findByEmail(email);
+
+        if(responseAdmin.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.ADMIN_NOT_FOUND);
+        }
+
+        return mapper.toDto(responseAdmin.get());
     }
 
     @Override

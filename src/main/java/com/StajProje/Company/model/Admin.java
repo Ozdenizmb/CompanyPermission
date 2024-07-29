@@ -32,5 +32,7 @@ public class Admin extends BaseEntity {
     private String phoneNumber;
     @Column(name = "role")
     private String role;
+    @Column(name = "statuses")
+    private String statuses;
 
 }
