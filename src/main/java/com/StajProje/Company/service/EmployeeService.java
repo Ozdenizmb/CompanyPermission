@@ -3,9 +3,10 @@ package com.StajProje.Company.service;
 import com.StajProje.Company.dto.EmployeeCreateDto;
 import com.StajProje.Company.dto.EmployeeDto;
 import com.StajProje.Company.dto.EmployeeUpdateDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface EmployeeService {
@@ -15,6 +16,6 @@ public interface EmployeeService {
     EmployeeDto getEmployee(String email);
     EmployeeDto updateEmployee(UUID id, EmployeeUpdateDto employeeUpdateDto, MultipartFile file);
     Boolean deleteEmployee(UUID id);
-    List<EmployeeDto> getAllEmployees();
+    Page<EmployeeDto> getAllEmployees(Pageable pageable);
 
 }

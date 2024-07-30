@@ -6,6 +6,7 @@ import com.StajProje.Company.dto.EmployeeUpdateDto;
 import com.StajProje.Company.exception.ErrorMessages;
 import com.StajProje.Company.exception.PermissionException;
 import com.StajProje.Company.mapper.EmployeeMapper;
+import com.StajProje.Company.mapper.PageMapperHelper;
 import com.StajProje.Company.model.Employee;
 import com.StajProje.Company.repository.EmployeeRepository;
 import com.StajProje.Company.service.AuthService;
@@ -14,6 +15,8 @@ import com.StajProje.Company.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -142,8 +145,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeDto> getAllEmployees() {
-        List<Employee> existEmployees = employeeRepository.findAll();
-        return employeeMapper.toDtoList(existEmployees);
+    public Page<EmployeeDto> getAllEmployees(Pageable pageable) {
+        Page<Employee> responseEmployee = employeeRepository.findAll(pageable);
+        return PageMapperHelper.mapEntityPageToDtoPage(responseEmployee, employeeMapper);
     }
 }

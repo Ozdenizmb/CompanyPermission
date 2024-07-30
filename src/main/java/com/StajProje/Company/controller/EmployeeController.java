@@ -6,11 +6,12 @@ import com.StajProje.Company.dto.EmployeeDto;
 import com.StajProje.Company.dto.EmployeeUpdateDto;
 import com.StajProje.Company.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -45,7 +46,7 @@ public class EmployeeController implements EmployeeApi {
     }
 
     @Override
-    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
-        return ResponseEntity.ok(service.getAllEmployees());
+    public ResponseEntity<Page<EmployeeDto>> getAllEmployees(Pageable pageable) {
+        return ResponseEntity.ok(service.getAllEmployees(pageable));
     }
 }
