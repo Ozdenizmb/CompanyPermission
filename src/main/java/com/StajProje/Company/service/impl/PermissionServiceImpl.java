@@ -5,6 +5,7 @@ import com.StajProje.Company.dto.PermissionDto;
 import com.StajProje.Company.dto.PermissionUpdateDto;
 import com.StajProje.Company.exception.ErrorMessages;
 import com.StajProje.Company.exception.PermissionException;
+import com.StajProje.Company.mapper.PageMapperHelper;
 import com.StajProje.Company.mapper.PermissionMapper;
 import com.StajProje.Company.model.Employee;
 import com.StajProje.Company.model.Permission;
@@ -13,6 +14,8 @@ import com.StajProje.Company.repository.PermissionRepository;
 import com.StajProje.Company.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -70,14 +73,25 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public List<PermissionDto> getPermissionsForEmployee(UUID employeeId) {
-        List<Permission> existPermissions = permissionRepository.findByEmployeeId(employeeId);
+    public Page<PermissionDto> getPermissions(Pageable pageable) {
+        Page<Permission> existPermission = permissionRepository.findAll(pageable);
+
+        if(existPermission.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND);
+        }
+
+        return PageMapperHelper.mapEntityPageToDtoPage(existPermission, mapper);
+    }
+
+    @Override
+    public Page<PermissionDto> getPermissionsForEmployee(UUID employeeId, Pageable pageable) {
+        Page<Permission> existPermissions = permissionRepository.findAllByEmployeeId(employeeId, pageable);
 
         if(existPermissions.isEmpty()) {
             throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND_FOR_EMPLOYEE);
         }
 
-        return mapper.toDtoList(existPermissions);
+        return PageMapperHelper.mapEntityPageToDtoPage(existPermissions, mapper);
     }
 
     @Override
