@@ -4,6 +4,7 @@ import com.StajProje.Company.api.PermissionApi;
 import com.StajProje.Company.dto.PermissionCreateDto;
 import com.StajProje.Company.dto.PermissionDto;
 import com.StajProje.Company.dto.PermissionUpdateDto;
+import com.StajProje.Company.dto.PermissionWithEmployeeDto;
 import com.StajProje.Company.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,12 +32,12 @@ public class PermissionController implements PermissionApi {
     }
 
     @Override
-    public ResponseEntity<Page<PermissionDto>> getPermissions(Pageable pageable) {
+    public ResponseEntity<Page<PermissionWithEmployeeDto>> getPermissions(Pageable pageable) {
         return ResponseEntity.ok(permissionService.getPermissions(pageable));
     }
 
     @Override
-    public ResponseEntity<Page<PermissionDto>> getPermissionsForEmployee(UUID employeeId, Pageable pageable) {
+    public ResponseEntity<Page<PermissionWithEmployeeDto>> getPermissionsForEmployee(UUID employeeId, Pageable pageable) {
         return ResponseEntity.ok(permissionService.getPermissionsForEmployee(employeeId, pageable));
     }
 

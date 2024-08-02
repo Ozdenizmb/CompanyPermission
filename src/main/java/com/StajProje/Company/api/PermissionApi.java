@@ -52,7 +52,7 @@ public interface PermissionApi {
     ResponseEntity<PermissionDto> getPermission(@PathVariable UUID id);
 
     @Operation(operationId = "getPermissions", summary = "Get permissions.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = PermissionDto.class))),
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = PermissionWithEmployeeDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -62,10 +62,10 @@ public interface PermissionApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping(value = "/get/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Page<PermissionDto>> getPermissions(Pageable pageable);
+    ResponseEntity<Page<PermissionWithEmployeeDto>> getPermissions(Pageable pageable);
 
     @Operation(operationId = "getPermissionsForEmployee", summary = "Get permissions for employee.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = PermissionDto.class))),
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = PermissionWithEmployeeDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(schema = @Schema(implementation = Error.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = Error.class))),
@@ -75,7 +75,7 @@ public interface PermissionApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping(value = "/get/employee/{employeeId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Page<PermissionDto>> getPermissionsForEmployee(@PathVariable UUID employeeId, Pageable pageable);
+    ResponseEntity<Page<PermissionWithEmployeeDto>> getPermissionsForEmployee(@PathVariable UUID employeeId, Pageable pageable);
 
     @Operation(operationId = "updatePermission", summary = "Update permission.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "SUCCESS", content = @Content(schema = @Schema(implementation = PermissionDto.class))),

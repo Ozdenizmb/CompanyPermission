@@ -3,6 +3,7 @@ package com.StajProje.Company.service.impl;
 import com.StajProje.Company.dto.PermissionCreateDto;
 import com.StajProje.Company.dto.PermissionDto;
 import com.StajProje.Company.dto.PermissionUpdateDto;
+import com.StajProje.Company.dto.PermissionWithEmployeeDto;
 import com.StajProje.Company.exception.ErrorMessages;
 import com.StajProje.Company.exception.PermissionException;
 import com.StajProje.Company.mapper.PageMapperHelper;
@@ -15,11 +16,13 @@ import com.StajProje.Company.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -73,25 +76,78 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Page<PermissionDto> getPermissions(Pageable pageable) {
-        Page<Permission> existPermission = permissionRepository.findAll(pageable);
+    public Page<PermissionWithEmployeeDto> getPermissions(Pageable pageable) {
+        Page<Permission> existPermissions = permissionRepository.findAll(pageable);
 
-        if(existPermission.isEmpty()) {
+        if(existPermissions.isEmpty()) {
             throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND);
         }
 
-        return PageMapperHelper.mapEntityPageToDtoPage(existPermission, mapper);
+        List<PermissionWithEmployeeDto> dtoList = new ArrayList<>();
+
+        for(Permission permission : existPermissions) {
+            Optional<Employee> responseEmployee = employeeRepository.findById(permission.getEmployeeId());
+
+            if(responseEmployee.isEmpty()) {
+                throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.DEFAULT_ERROR_MESSAGE);
+            }
+
+            Employee existEmployee = responseEmployee.get();
+
+            PermissionWithEmployeeDto dto = new PermissionWithEmployeeDto(
+                    permission.getId(),
+                    permission.getEmployeeId(),
+                    existEmployee.getFirstName(),
+                    existEmployee.getLastName(),
+                    existEmployee.getEmail(),
+                    existEmployee.getDepartment(),
+                    permission.getDescription(),
+                    permission.getNumberOfDays(),
+                    permission.getStartDate(),
+                    permission.getEndDate()
+            );
+
+            dtoList.add(dto);
+        }
+
+        return new PageImpl<>(dtoList, pageable, existPermissions.getTotalElements());
     }
 
     @Override
-    public Page<PermissionDto> getPermissionsForEmployee(UUID employeeId, Pageable pageable) {
+    public Page<PermissionWithEmployeeDto> getPermissionsForEmployee(UUID employeeId, Pageable pageable) {
         Page<Permission> existPermissions = permissionRepository.findAllByEmployeeId(employeeId, pageable);
 
         if(existPermissions.isEmpty()) {
             throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.PERMISSION_NOT_FOUND_FOR_EMPLOYEE);
         }
 
-        return PageMapperHelper.mapEntityPageToDtoPage(existPermissions, mapper);
+        Optional<Employee> responseEmployee = employeeRepository.findById(employeeId);
+
+        if(responseEmployee.isEmpty()) {
+            throw PermissionException.withStatusAndMessage(HttpStatus.NOT_FOUND, ErrorMessages.DEFAULT_ERROR_MESSAGE);
+        }
+
+        Employee existEmployee = responseEmployee.get();
+        List<PermissionWithEmployeeDto> dtoList = new ArrayList<>();
+
+        for (Permission permission : existPermissions) {
+            PermissionWithEmployeeDto dto = new PermissionWithEmployeeDto(
+                    permission.getId(),
+                    permission.getEmployeeId(),
+                    existEmployee.getFirstName(),
+                    existEmployee.getLastName(),
+                    existEmployee.getEmail(),
+                    existEmployee.getDepartment(),
+                    permission.getDescription(),
+                    permission.getNumberOfDays(),
+                    permission.getStartDate(),
+                    permission.getEndDate()
+            );
+
+            dtoList.add(dto);
+        }
+
+        return new PageImpl<>(dtoList, pageable, existPermissions.getTotalElements());
     }
 
     @Override
