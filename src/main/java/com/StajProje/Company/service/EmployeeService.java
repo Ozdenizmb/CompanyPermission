@@ -13,7 +13,8 @@ public interface EmployeeService {
 
     UUID signUpEmployee(EmployeeCreateDto employeeCreateDto);
     EmployeeDto loginEmployee(String email, String password);
-    EmployeeDto getEmployee(String email);
+    EmployeeDto getEmployeeWithEmail(String email);
+    EmployeeDto getEmployeeWithId(UUID id);
     EmployeeDto updateEmployee(UUID id, EmployeeUpdateDto employeeUpdateDto, MultipartFile file);
     Boolean deleteEmployee(UUID id);
     Page<EmployeeDto> getAllEmployees(Pageable pageable);
