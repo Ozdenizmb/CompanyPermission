@@ -12,10 +12,8 @@ public record PermissionUpdateDto(
         @NotBlank
         @NotNull
         String description,
-        @NotBlank
         @NotNull
         LocalDate startDate,
-        @NotBlank
         @NotNull
         LocalDate endDate
 ) {

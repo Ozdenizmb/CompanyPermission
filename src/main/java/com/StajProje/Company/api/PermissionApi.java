@@ -88,7 +88,7 @@ public interface PermissionApi {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @PutMapping(value = "/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<PermissionDto> updatePermission(@PathVariable UUID id, @RequestBody PermissionUpdateDto permissionUpdateDto);
+    ResponseEntity<PermissionDto> updatePermission(@PathVariable UUID id, @RequestBody @Valid PermissionUpdateDto permissionUpdateDto);
 
     @Operation(operationId = "deletePermission", summary = "Delete permission.")
     @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "No Content"),
