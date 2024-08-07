@@ -4,11 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public record PermissionUpdateDto(
+        @NotBlank
         @NotNull
-        UUID employeeId,
+        String email,
         @NotBlank
         @NotNull
         String description,

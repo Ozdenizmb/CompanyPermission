@@ -1,7 +1,5 @@
 package com.StajProje.Company.api;
 
-import com.StajProje.Company.dto.AdminCreateDto;
-import com.StajProje.Company.dto.AdminDto;
 import com.StajProje.Company.dto.ContactCreateDto;
 import com.StajProje.Company.dto.ContactDto;
 import io.swagger.v3.oas.annotations.Operation;

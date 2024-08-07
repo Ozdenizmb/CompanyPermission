@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, UUID> {
 
-    List<Permission> findByEmployeeId(UUID id);
-    Page<Permission> findAllByEmployeeId(UUID id, Pageable pageable);
+    List<Permission> findByEmail(String email);
+    Page<Permission> findAllByEmail(String email, Pageable pageable);
 
 }
